@@ -27,6 +27,7 @@
 			bottom: 0;
 			left: 0;
 			width: 100%;
+			height: 50px;
 			z-index: 9999;
 			background-color: black;
 		}
@@ -60,36 +61,24 @@
 	<!-- Инициализация рекламы Tads.me -->
 	<script>
 		const adsNotFoundCallback = () => {
-			console.log('Реклама не найдена, повторная попытка через 6 секунд');
 			setTimeout(() => {
 				adController.loadAd()
 					.then(() => adController.showAd())
-					.catch((err) => {
-						console.log(err);
-						adsNotFoundCallback();
-					});
+					.catch(() => adsNotFoundCallback());
 			}, 6000);
 		};
 
 		const adController = window.tads.init({
 			widgetId: 407,
 			debug: false,
-			onShowReward: (adId) => {
-				console.log('Показана реклама:', adId);
-			},
-			onClickReward: (adId) => {
-				console.log('Клик по рекламе:', adId);
-			},
+			onShowReward: (adId) => {},
+			onClickReward: (adId) => {},
 			onAdsNotFound: adsNotFoundCallback
 		});
 
-		// Первая попытка загрузки рекламы
 		adController.loadAd()
 			.then(() => adController.showAd())
-			.catch((err) => {
-				console.log(err);
-				adsNotFoundCallback();
-			});
+			.catch(() => adsNotFoundCallback());
 	</script>
 </body> 
 </html>
