@@ -16,21 +16,34 @@
 	<link rel="icon" type="image/png" href="icons/icon-256.png">
 
 	<link rel="stylesheet" href="style.css">
-
-
+	
+	<!-- Tads.me скрипты -->
+	<script src="https://w.tads.me/widget.js"></script>
+	<script src="https://telegram.org/js/telegram-web-app.js"></script>
+	
+	<style>
+		#tads-container-407 {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			z-index: 9999;
+			background-color: black;
+		}
+	</style>
 
 </head> 
  
 <body>
+	<!-- Контейнер для рекламы -->
+	<div id="tads-container-407"></div>
 
-	
-
-<script>
-if (location.protocol.substr(0, 4) === "file")
-{
-	alert("Web exports won't work until you upload them. (When running on the file: protocol, browsers block many features from working for security reasons.)");
-}
-</script>
+	<script>
+	if (location.protocol.substr(0, 4) === "file")
+	{
+		alert("Web exports won't work until you upload them. (When running on the file: protocol, browsers block many features from working for security reasons.)");
+	}
+	</script>
 	
 	<noscript>
 		<div id="notSupportedWrap">
@@ -44,5 +57,39 @@ if (location.protocol.substr(0, 4) === "file")
 	<script src="scripts/main.js" type="module"></script>
 	<script src="scripts/register-sw.js" type="module"></script>
 
+	<!-- Инициализация рекламы Tads.me -->
+	<script>
+		const adsNotFoundCallback = () => {
+			console.log('Реклама не найдена, повторная попытка через 6 секунд');
+			setTimeout(() => {
+				adController.loadAd()
+					.then(() => adController.showAd())
+					.catch((err) => {
+						console.log(err);
+						adsNotFoundCallback();
+					});
+			}, 6000);
+		};
+
+		const adController = window.tads.init({
+			widgetId: 407,
+			debug: false,
+			onShowReward: (adId) => {
+				console.log('Показана реклама:', adId);
+			},
+			onClickReward: (adId) => {
+				console.log('Клик по рекламе:', adId);
+			},
+			onAdsNotFound: adsNotFoundCallback
+		});
+
+		// Первая попытка загрузки рекламы
+		adController.loadAd()
+			.then(() => adController.showAd())
+			.catch((err) => {
+				console.log(err);
+				adsNotFoundCallback();
+			});
+	</script>
 </body> 
 </html>
