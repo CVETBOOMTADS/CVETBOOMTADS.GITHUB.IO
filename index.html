@@ -2,47 +2,108 @@
 <html>
 <head>
     <meta charset="UTF-8">
-	<title>Цветной бум</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-	
-	<!-- Made with Construct, the game and app creator :: https://www.construct.net -->
-	<meta name="generator" content="Scirra Construct">
+    <title>Цветной бум</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    
+    <meta name="generator" content="Scirra Construct">
+    <meta name="description" content="3 в ряд">
 
-	<meta name="description" content="3 в ряд">
+    <link rel="manifest" href="appmanifest.json">
+    <link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png">
+    <link rel="apple-touch-icon" sizes="256x256" href="icons/icon-256.png">
+    <link rel="icon" type="image/png" href="icons/icon-256.png">
 
-	<link rel="manifest" href="appmanifest.json">
-	<link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png">
-	<link rel="apple-touch-icon" sizes="256x256" href="icons/icon-256.png">
-	<link rel="icon" type="image/png" href="icons/icon-256.png">
-
-	<link rel="stylesheet" href="style.css">
-
-
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        #tads-container-407 {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            z-index: 9999;
+            background-color: black;
+        }
+    </style>
 
 </head> 
  
 <body>
+    <!-- Контейнер для рекламы -->
+    <div id="tads-container-407"></div>
 
-	
+    <script>
+    if (location.protocol.substr(0, 4) === "file")
+    {
+        alert("Web exports won't work until you upload them. (When running on the file: protocol, browsers block many features from working for security reasons.)");
+    }
+    </script>
+    
+    <noscript>
+        <div id="notSupportedWrap">
+            <h2 id="notSupportedTitle">This content requires JavaScript</h2>
+            <p class="notSupportedMessage">JavaScript appears to be disabled. Please enable it to view this content.</p>
+        </div>
+    </noscript>
 
-<script>
-if (location.protocol.substr(0, 4) === "file")
-{
-	alert("Web exports won't work until you upload them. (When running on the file: protocol, browsers block many features from working for security reasons.)");
-}
-</script>
-	
-	<noscript>
-		<div id="notSupportedWrap">
-			<h2 id="notSupportedTitle">This content requires JavaScript</h2>
-			<p class="notSupportedMessage">JavaScript appears to be disabled. Please enable it to view this content.</p>
-		</div>
-	</noscript>
-	<script src="scripts/modernjscheck.js"></script>
-	<script src="scripts/supportcheck.js"></script>
-	<script src="scripts/offlineclient.js" type="module"></script>
-	<script src="scripts/main.js" type="module"></script>
-	<script src="scripts/register-sw.js" type="module"></script>
+    <!-- Основные скрипты -->
+    <script src="scripts/modernjscheck.js"></script>
+    <script src="scripts/supportcheck.js"></script>
+    <script src="scripts/offlineclient.js" type="module"></script>
+    <script src="scripts/main.js" type="module"></script>
+    <script src="scripts/register-sw.js" type="module"></script>
 
+    <!-- Tads.me скрипты -->
+    <script src="https://w.tads.me/widget.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Инициализация рекламы Tads.me -->
+    <script>
+        window.addEventListener('load', function() {
+            const initTadsAds = () => {
+                if (typeof window.tads === 'undefined') {
+                    console.log('Ожидание загрузки Tads.me...');
+                    setTimeout(initTadsAds, 1000);
+                    return;
+                }
+
+                const adsNotFoundCallback = () => {
+                    setTimeout(() => {
+                        adController.loadAd()
+                            .then(() => adController.showAd())
+                            .catch((error) => {
+                                console.log('Ошибка загрузки рекламы:', error);
+                                adsNotFoundCallback();
+                            });
+                    }, 6000);
+                };
+
+                const adController = window.tads.init({
+                    widgetId: 407,
+                    debug: false, // Включаем debug для отладки
+                    onShowReward: (adId) => {
+                        console.log('Реклама показана:', adId);
+                    },
+                    onClickReward: (adId) => {
+                        console.log('Клик по рекламе:', adId);
+                    },
+                    onAdsNotFound: adsNotFoundCallback
+                });
+
+                adController.loadAd()
+                    .then(() => {
+                        console.log('Реклама загружена успешно');
+                        return adController.showAd();
+                    })
+                    .catch((error) => {
+                        console.log('Ошибка инициализации рекламы:', error);
+                        adsNotFoundCallback();
+                    });
+            };
+
+            initTadsAds();
+        });
+    </script>
 </body> 
 </html>
